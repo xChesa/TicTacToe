@@ -144,7 +144,6 @@ public class TicTacToe {
         /* check top left to bottom right diagonal win */
         if (y - x == 0) {
         desWin = true;
-            System.out.println("left top");
             for (int i = 0; i < gameboard.length - 1; i++) {
                 if (gameboard[i][i] != gameboard[i + 1][i + 1]) {
                     desWin = false;
@@ -155,11 +154,8 @@ public class TicTacToe {
 
         /* check bottom left to top right diagonal win */
         if (gameboard.length - 1 - y - x == 0) {
-            System.out.println("left bot");
             ascWin = true;
             for (int i = 0; i < gameboard.length - 1; i++) {
-                System.out.println((gameboard.length - i - 1) + " " + i + " " + (gameboard.length - i - 2) + " " + (i + 1));
-                System.out.println(gameboard[gameboard.length - i - 1][i] + " " + gameboard[gameboard.length - i - 2][i + 1]);
                 if (gameboard[gameboard.length - i - 1][i] != gameboard[gameboard.length - i - 2][i + 1]) {
                     ascWin = false;
                     break;
