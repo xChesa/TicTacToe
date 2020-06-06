@@ -108,7 +108,7 @@ public class TicTacToe {
     /*
      * This method checks the played horizontal row for a win condition
      */
-    public boolean checkRow(int y) {
+    private boolean checkRow(int y) {
 
         for (int i = 0; i < gameboard.length - 1; i++) {
             if (gameboard[y][i] != gameboard[y][i + 1]) {
@@ -123,7 +123,7 @@ public class TicTacToe {
     /*
      * This method checks the played vertical column for a win condition
      */
-    public boolean checkCol(int x) {
+    private boolean checkCol(int x) {
 
         for (int i = 0; i < gameboard.length - 1; i++) {
             if (gameboard[i][x] != gameboard[i + 1][x]) {
@@ -137,7 +137,7 @@ public class TicTacToe {
     /*
      * Checks diagonal for a win condition
      */
-    public boolean checkDiagonal(int y, int x) {
+    private boolean checkDiagonal(int y, int x) {
         boolean desWin = false;
         boolean ascWin = false;
 
@@ -170,7 +170,7 @@ public class TicTacToe {
     /*
      * Prints game board
      */
-    public void printGameboard() {
+    private void printGameboard() {
         /* Determines the size of the header and footer dynamically with board size */
         StringBuilder header = new StringBuilder("---");
         header.append("--".repeat(gameboard.length));
