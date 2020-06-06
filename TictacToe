@@ -11,6 +11,7 @@ public class TicTacToe {
     private int emptySpaces;
     private char[][] gameboard;
     private Scanner scan;
+    private int inARowToWin;
 
     public TicTacToe() {
         this.gameOver = false;
@@ -26,10 +27,18 @@ public class TicTacToe {
     }
 
     /*
-     * Create a custom board matrix
+     * Create a connect three board with a custom size and three connected to win
      */
     public void createBoard(int customSize) {
-        if (customSize > 0) {
+        createBoard(customSize, 3);
+    }
+
+    /*
+     * Create a custom size board with a custom defined amount to connect to win
+     */
+    public void createBoard(int customSize, int inARowToWin) {
+        if (customSize > 0 && inARowToWin > 0) {
+            this.inARowToWin = inARowToWin;
 
             gameboard = new char[customSize][customSize];
             emptySpaces = customSize * customSize;
@@ -37,7 +46,7 @@ public class TicTacToe {
                 Arrays.fill(chars, '_');
             }
         } else {
-            createBoard();
+            createBoard(3, 3);
         }
     }
 
@@ -79,7 +88,7 @@ public class TicTacToe {
                             gameOver = true;
                         }
 
-                        xTurn = !xTurn;
+                        //xTurn = !xTurn;
 
                     } else {
                         System.out.println("This cell is occupied! Choose another one!");
@@ -97,9 +106,10 @@ public class TicTacToe {
     private boolean isWinCondition(int y, int x) {
         boolean winCondition;
 
-        winCondition = checkRow(y) || checkCol(x);
+        winCondition = checkRow(y, x) || checkCol(y, x);
 
-        if (y - x == 0 || gameboard.length - 1 - y - x == 0) {
+        if (inARowToWin < gameboard.length || y - x == 0 || gameboard.length - 1 - y - x == 0) {
+            System.out.println("checking diag");
             winCondition = checkDiagonal(y, x) || winCondition;
         }
 
@@ -109,30 +119,53 @@ public class TicTacToe {
     /*
      * This method checks the played horizontal row for a win condition
      */
-    private boolean checkRow(int y) {
+    private boolean checkRow(int y, int x) {
 
-        for (int i = 0; i < gameboard.length - 1; i++) {
-            if (gameboard[y][i] != gameboard[y][i + 1]) {
-                return false;
+        int count = 0;
+
+        for (int i = 0; i < gameboard.length; i++) {
+            if (x - i >= 0 && gameboard[y][x] == gameboard[y][x - i]) {
+                count++;
+            } else {
+                break;
             }
         }
 
-        return true;
+        for (int i = 0; i < gameboard.length; i++) {
+            if (x + i < gameboard.length && gameboard[y][x] == gameboard[y][x + i]) {
+                count++;
+            } else {
+                break;
+            }
+        }
+
+        return count > inARowToWin;
     }
 
 
     /*
      * This method checks the played vertical column for a win condition
      */
-    private boolean checkCol(int x) {
+    private boolean checkCol(int y, int x) {
+        int count = 0;
 
-        for (int i = 0; i < gameboard.length - 1; i++) {
-            if (gameboard[i][x] != gameboard[i + 1][x]) {
-                return false;
+        for (int i = 0; i < gameboard.length; i++) {
+            if (y - i >= 0 && gameboard[y][x] == gameboard[y - i][x]) {
+                count++;
+            } else {
+                break;
             }
         }
 
-        return true;
+        for (int i = 0; i < gameboard.length; i++) {
+            if (y + i < gameboard.length && gameboard[y][x] == gameboard[y + i][x]) {
+                count++;
+            } else {
+                break;
+            }
+        }
+
+        return count > inARowToWin;
     }
 
     /*
@@ -141,27 +174,53 @@ public class TicTacToe {
     private boolean checkDiagonal(int y, int x) {
         boolean desWin = false;
         boolean ascWin = false;
+        int count;
 
         /* check top left to bottom right diagonal win */
-        if (y - x == 0) {
-        desWin = true;
-            for (int i = 0; i < gameboard.length - 1; i++) {
-                if (gameboard[i][i] != gameboard[i + 1][i + 1]) {
-                    desWin = false;
+        if (inARowToWin < gameboard.length || y - x == 0) {
+            count = 1;
+
+            for (int i = 1; i < gameboard.length - 1; i++) {
+                if (y - i >= 0 && x - i >= 0 && gameboard[y][x] == gameboard[y - i][x - i]) {
+                    count++;
+                    System.out.println(count);
+                } else {
                     break;
                 }
             }
+
+            for (int i = 1; i < gameboard.length - 1; i++) {
+                if (y + i < gameboard.length && x + i < gameboard.length
+                        && gameboard[y][x] == gameboard[y + i][x + i]) {
+                    count++;
+                } else {
+                    break;
+                }
+            }
+            desWin = count >= inARowToWin;
         }
 
         /* check bottom left to top right diagonal win */
-        if (gameboard.length - 1 - y - x == 0) {
-            ascWin = true;
-            for (int i = 0; i < gameboard.length - 1; i++) {
-                if (gameboard[gameboard.length - i - 1][i] != gameboard[gameboard.length - i - 2][i + 1]) {
-                    ascWin = false;
+        if (inARowToWin < gameboard.length || gameboard.length - 1 - y - x == 0) {
+            count = 1;
+
+            for (int i = 1; i < gameboard.length - 1; i++) {
+                if (y + i < gameboard.length && x - i >= 0 && gameboard[y][x] == gameboard[y + i][x - i]) {
+                    count++;
+                } else {
                     break;
                 }
             }
+
+            for (int i = 1; i < gameboard.length - 1; i++) {
+                if (y - i >= 0 && x + i < gameboard.length && gameboard[y][x] == gameboard[y - i][x + i]) {
+                    count++;
+                } else {
+                    break;
+                }
+            }
+
+            ascWin = count >= inARowToWin;
         }
 
         return desWin || ascWin;
