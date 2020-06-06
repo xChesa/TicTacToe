@@ -109,7 +109,6 @@ public class TicTacToe {
         winCondition = checkRow(y, x) || checkCol(y, x);
 
         if (inARowToWin < gameboard.length || y - x == 0 || gameboard.length - 1 - y - x == 0) {
-            System.out.println("checking diag");
             winCondition = checkDiagonal(y, x) || winCondition;
         }
 
@@ -183,7 +182,6 @@ public class TicTacToe {
             for (int i = 1; i < gameboard.length - 1; i++) {
                 if (y - i >= 0 && x - i >= 0 && gameboard[y][x] == gameboard[y - i][x - i]) {
                     count++;
-                    System.out.println(count);
                 } else {
                     break;
                 }
