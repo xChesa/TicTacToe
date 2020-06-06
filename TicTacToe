@@ -88,7 +88,7 @@ public class TicTacToe {
                             gameOver = true;
                         }
 
-                        //xTurn = !xTurn;
+                        xTurn = !xTurn;
 
                     } else {
                         System.out.println("This cell is occupied! Choose another one!");
@@ -179,7 +179,7 @@ public class TicTacToe {
         if (inARowToWin < gameboard.length || y - x == 0) {
             count = 1;
 
-            for (int i = 1; i < gameboard.length - 1; i++) {
+            for (int i = 1; i < gameboard.length; i++) {
                 if (y - i >= 0 && x - i >= 0 && gameboard[y][x] == gameboard[y - i][x - i]) {
                     count++;
                 } else {
@@ -187,7 +187,7 @@ public class TicTacToe {
                 }
             }
 
-            for (int i = 1; i < gameboard.length - 1; i++) {
+            for (int i = 1; i < gameboard.length; i++) {
                 if (y + i < gameboard.length && x + i < gameboard.length
                         && gameboard[y][x] == gameboard[y + i][x + i]) {
                     count++;
@@ -202,7 +202,7 @@ public class TicTacToe {
         if (inARowToWin < gameboard.length || gameboard.length - 1 - y - x == 0) {
             count = 1;
 
-            for (int i = 1; i < gameboard.length - 1; i++) {
+            for (int i = 1; i < gameboard.length; i++) {
                 if (y + i < gameboard.length && x - i >= 0 && gameboard[y][x] == gameboard[y + i][x - i]) {
                     count++;
                 } else {
@@ -210,7 +210,7 @@ public class TicTacToe {
                 }
             }
 
-            for (int i = 1; i < gameboard.length - 1; i++) {
+            for (int i = 1; i < gameboard.length; i++) {
                 if (y - i >= 0 && x + i < gameboard.length && gameboard[y][x] == gameboard[y - i][x + i]) {
                     count++;
                 } else {
