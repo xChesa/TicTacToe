@@ -30,7 +30,6 @@ public class TicTacToe {
      */
     public void createBoard(int customSize) {
         if (customSize > 0) {
-            boolean validInput;
 
             gameboard = new char[customSize][customSize];
             emptySpaces = customSize * customSize;
