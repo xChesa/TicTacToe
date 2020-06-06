@@ -1,0 +1,197 @@
+package tictactoe;
+
+import java.util.Arrays;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class TicTacToe {
+
+    boolean gameOver;
+    boolean xTurn;
+    int emptySpaces;
+    char[][] gameboard;
+    Scanner scan;
+
+    public TicTacToe() {
+        this.gameOver = false;
+        this.xTurn = true;
+        this.scan = new Scanner(System.in);
+    }
+
+    /*
+     * Create the board matrix
+     */
+    public void createBoard() {
+        createBoard(3);
+    }
+
+    /*
+     * Create a custom board matrix
+     */
+    public void createBoard(int customSize) {
+        if (customSize > 0) {
+            boolean validInput;
+
+            gameboard = new char[customSize][customSize];
+            emptySpaces = customSize * customSize;
+            for (char[] chars : gameboard) {
+                Arrays.fill(chars, '_');
+            }
+        } else {
+            createBoard();
+        }
+    }
+
+    /*
+     * Handles the code while the game is in progress
+     */
+    public void play() {
+        while (!gameOver) {
+            printGameboard();
+            System.out.println("Enter the coordinates: ");
+            int coordX;
+            int coordY;
+
+            try {
+                int inputX = scan.nextInt();
+                int inputY = scan.nextInt();
+
+
+                /* Verify that the input is within the game's boundaries */
+                if (inputX > 0 && inputX <= gameboard.length && inputY > 0 && inputY <= gameboard.length) {
+
+                    coordX = inputX - 1;
+                    coordY = Math.abs(inputY - gameboard.length);
+
+                    /* Commit change to board if spot is empty */
+                    if (gameboard[coordY][coordX] == '_' || gameboard[coordY][coordX] == ' ') {
+                        gameboard[coordY][coordX] = xTurn ? 'X' : 'O';
+
+                        emptySpaces--;
+
+                        /* Check for a win based on the previously played spot */
+                        if (isWinCondition(coordY, coordX)) {
+                            printGameboard();
+                            System.out.println(xTurn ? "X wins" : "O wins");
+                            gameOver = true;
+                        } else if (emptySpaces == 0) {
+                            System.out.println("Draw");
+                            gameOver = true;
+                        }
+
+                        xTurn = !xTurn;
+
+                    } else {
+                        System.out.println("This cell is occupied! Choose another one!");
+                    }
+                } else {
+                    System.out.println("You should enter a number between 1 and 3.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("You should enter a number between 1 and 3.");
+                scan.next();
+            }
+        }
+    }
+
+    private boolean isWinCondition(int y, int x) {
+        boolean winCondition;
+
+        winCondition = checkRow(y) || checkCol(x);
+
+        if (y - x == 0 || gameboard.length - 1 - y - x == 0) {
+            winCondition = checkDiagonal(y, x) || winCondition;
+        }
+
+        return winCondition;
+    }
+
+    /*
+     * This method checks the played horizontal row for a win condition
+     */
+    public boolean checkRow(int y) {
+
+        for (int i = 0; i < gameboard.length - 1; i++) {
+            if (gameboard[y][i] != gameboard[y][i + 1]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    /*
+     * This method checks the played vertical column for a win condition
+     */
+    public boolean checkCol(int x) {
+
+        for (int i = 0; i < gameboard.length - 1; i++) {
+            if (gameboard[i][x] != gameboard[i + 1][x]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /*
+     * Checks diagonal for a win condition
+     */
+    public boolean checkDiagonal(int y, int x) {
+        boolean desWin = false;
+        boolean ascWin = false;
+
+        /* check top left to bottom right diagonal win */
+        if (y - x == 0) {
+        desWin = true;
+            System.out.println("left top");
+            for (int i = 0; i < gameboard.length - 1; i++) {
+                if (gameboard[i][i] != gameboard[i + 1][i + 1]) {
+                    desWin = false;
+                    break;
+                }
+            }
+        }
+
+        /* check bottom left to top right diagonal win */
+        if (gameboard.length - 1 - y - x == 0) {
+            System.out.println("left bot");
+            ascWin = true;
+            for (int i = 0; i < gameboard.length - 1; i++) {
+                System.out.println((gameboard.length - i - 1) + " " + i + " " + (gameboard.length - i - 2) + " " + (i + 1));
+                System.out.println(gameboard[gameboard.length - i - 1][i] + " " + gameboard[gameboard.length - i - 2][i + 1]);
+                if (gameboard[gameboard.length - i - 1][i] != gameboard[gameboard.length - i - 2][i + 1]) {
+                    ascWin = false;
+                    break;
+                }
+            }
+        }
+
+        return desWin || ascWin;
+    }
+
+
+    /*
+     * Prints game board
+     */
+    public void printGameboard() {
+        /* Determines the size of the header and footer dynamically with board size */
+        StringBuilder header = new StringBuilder("---");
+        header.append("--".repeat(gameboard.length));
+
+        System.out.println(header);
+
+        for (char[] chars : gameboard) { // print out the gameboard
+            System.out.print("| ");
+
+            for (char ch : chars) {
+                System.out.print(ch + " ");
+            }
+            System.out.println("|");
+        }
+
+        System.out.println(header);
+    }
+
+}
