@@ -4,10 +4,16 @@ import java.util.Scanner;
 
 public class Main {
 
+    public static char[][] gameboard; // static variable so that we can access it in the methods without passing it
+
     public static void main(String[] args) {
         TicTacToe ttt = new TicTacToe();
-        //ttt.createBoard();      // Creates a default size tic tac toe board (3x3)
-        ttt.createBoard(true);    //alternative method to create a custom size board
+        Scanner scan = new Scanner(System.in);
+
+        //ttt.createBoard();                // Creates a default size tic tac toe board (3x3)
+
+        System.out.println("Please choose the size of board you would like to play");
+        ttt.createBoard(scan.nextInt());    //alternative method to create a custom size board
         ttt.play();
     }
 }
