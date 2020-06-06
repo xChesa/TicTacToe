@@ -1,0 +1,13 @@
+package tictactoe;
+
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        TicTacToe ttt = new TicTacToe();
+        //ttt.createBoard();      // Creates a default size tic tac toe board (3x3)
+        ttt.createBoard(true);    //alternative method to create a custom size board
+        ttt.play();
+    }
+}
