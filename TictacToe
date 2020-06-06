@@ -6,11 +6,11 @@ import java.util.Scanner;
 
 public class TicTacToe {
 
-    boolean gameOver;
-    boolean xTurn;
-    int emptySpaces;
-    char[][] gameboard;
-    Scanner scan;
+    private boolean gameOver;
+    private boolean xTurn;
+    private int emptySpaces;
+    private char[][] gameboard;
+    private Scanner scan;
 
     public TicTacToe() {
         this.gameOver = false;
@@ -74,6 +74,7 @@ public class TicTacToe {
                             System.out.println(xTurn ? "X wins" : "O wins");
                             gameOver = true;
                         } else if (emptySpaces == 0) {
+                            printGameboard();
                             System.out.println("Draw");
                             gameOver = true;
                         }
