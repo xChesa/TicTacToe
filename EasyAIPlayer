@@ -1,0 +1,22 @@
+package tictactoe;
+
+public class EasyAIPlayer extends AIPlayer {
+
+    private String difficulty;
+    private char identifier;
+
+    public EasyAIPlayer(char identifier) {
+        this.difficulty = "easy";
+        this.identifier = identifier;
+    }
+
+    @Override
+    public int getTurn(char[][] gameboard) {
+        return getRandomMove(gameboard);
+    }
+
+    @Override
+    public String getDifficulty() {
+        return difficulty;
+    }
+}
