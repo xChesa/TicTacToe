@@ -1,24 +1,145 @@
 package tictactoe;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
 
+    private static TicTacToe ttt;
+    private static AIPlayer player1AI;
+    private static AIPlayer player2AI;
+    private static boolean exit;
+
     public static void main(String[] args) {
-        TicTacToe ttt = new TicTacToe();
-        Scanner scan = new Scanner(System.in);
+        // write your code here
+        ttt = new TicTacToe();
+        exit = false;
 
-        //ttt.createBoard();                // Creates a default size tic tac toe board (3x3)
+        //System.out.print("Enter cells: ");
+        try (Scanner scan = new Scanner(System.in)) {
+            while (!exit) {
+                player1AI = null;
+                player2AI = null;
 
-        System.out.println("Please choose the size of board you would like to play");
-        int boardSize = scan.nextInt();
-        //ttt.createBoard(boardSize);       // Alternative method to create a custom size board
-        
-        System.out.println("Please designate how many should be in a row to win");
-        int inARowToWin = scan.nextInt();
-        
-        ttt.createBoard(boardSize, inARowToWin);    // Method to create custom sized board with customized winning connections
+                String[] params;
+                do {
+                    System.out.print("Input command: ");
+                    params = scan.nextLine().toLowerCase().split(" ");
+                } while (!handleCommand(params));
+            /*System.out.print("Would you like to play with AI? ");
+            aiPlayer = scan.nextLine().equalsIgnoreCase("yes") ? true : false;
+            if (aiPlayer) {
 
-        ttt.play();
+                boolean validDifficulty = false;
+                do {
+                    System.out.print("Please enter an AI difficulty (easy, medium, or hard): ");
+                    String difficulty = scan.nextLine().toLowerCase();
+                    if (difficulty.equals("easy")) {
+                        ai = new EasyAIPlayer();
+                        validDifficulty = true;
+                    } else if (difficulty.equals("medium")) {
+
+                        validDifficulty = true;
+                    } else if (difficulty.equals("hard")) {
+
+                        validDifficulty = true;
+                    }
+                } while (!validDifficulty);
+            }*/
+                /*if (!ttt.isGameOver()) {
+                    ttt.createBoard();
+                }*/
+            /*String regex = "[xoXO_ ]*";
+            String input = scan.nextLine();
+            if (input.matches(regex)) {
+                ttt.createInitializedBoard(input.toCharArray());
+            } else {
+                System.out.println("Please input only x, o, _, or spaces!");
+            }*/
+                while (!ttt.isGameOver()) {
+                    boolean turnTaken = false;
+                    while (!turnTaken) {
+                        AIPlayer currentAI = ttt.isXTurn() ? player1AI : player2AI;
+                        int inputX;
+                        int inputY;
+
+                        if (currentAI != null) {
+                            try {
+                                Thread.sleep(250);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            int pos = currentAI.getTurn(ttt.getGameboard());
+                            inputX = pos % 3 == 0 ? 3 : pos % 3;
+                            inputY = inputX == 3 ? pos / 3 : pos / 3 + 1;
+                            System.out.println(String.format("Making move level \"%s\"", currentAI.getDifficulty()));
+                            turnTaken = ttt.move(inputX, inputY);
+
+                        } else {
+                            System.out.print("Enter the coordinates: ");
+                            try {
+                                inputX = scan.nextInt();
+                                inputY = scan.nextInt();
+                                turnTaken = ttt.move(inputX, inputY);
+                                scan.nextLine();
+
+                            } catch (InputMismatchException e) {
+                                System.out.println("You should enter numbers!");
+                                scan.next();
+                            }
+                        }
+                    }
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    private static boolean handleCommand(String[] params) {
+        if (params.length == 3) {
+            if (params[0].equals("start")) {
+                switch (params[1]) {
+                    case "user":
+                        break;
+                    case "easy":
+                        player1AI = new EasyAIPlayer('X');
+                        break;
+                    case "medium":
+                        player1AI = new MediumAIPlayer('X');
+                        break;
+                    /*case "hard":
+                        break;*/
+                    default:
+                        System.out.println("Bad parameters!");
+                        return false;
+                }
+
+                switch (params[2]) {
+                    case "user":
+                        break;
+                    case "easy":
+                        player2AI = new EasyAIPlayer('O');
+                        break;
+                    case "medium":
+                        player2AI = new MediumAIPlayer('O');
+                        break;
+                    /*case "hard":
+                        break;*/
+                    default:
+                        System.out.println("Bad parameters!");
+                        return false;
+                }
+
+                ttt.createBoard();
+            }
+        } else if (params[0].equals("exit")) {
+            exit = true;
+            ttt.setGameOver(true);
+        } else {
+            System.out.println("Bad parameters!");
+            return false;
+        }
+
+        return true;
     }
 }
