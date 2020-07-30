@@ -1,0 +1,37 @@
+package tictactoe;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+public abstract class AIPlayer {
+
+    private String difficulty;
+    private char identifier;
+
+    public AIPlayer() {}
+
+    public abstract int getTurn(char[][] gameboard);
+
+    public abstract String getDifficulty();
+
+    public int getRandomMove(char[][] gameboard) {
+        ArrayList open = new ArrayList<Integer>();
+        for (int i = 0; i < gameboard.length; i++) {
+            for (int j = 0; j < gameboard.length; j++) {
+                if (gameboard[i][j] == '_' || gameboard[i][j] == ' ') {
+                    open.add(translateToPos(gameboard.length, i, j));
+                }
+            }
+        }
+        System.out.println(open.toString());
+
+        Random random = new Random();
+        int num = (int) open.get(random.nextInt(open.size()));
+        System.out.println(num);
+        return num;
+    }
+
+    public int translateToPos(int boardLength, int row, int col) {
+        return (boardLength - (row + 1)) * boardLength + (col + 1);
+    }
+}
