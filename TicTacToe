@@ -1,8 +1,6 @@
 package tictactoe;
 
 import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class TicTacToe {
 
@@ -10,13 +8,25 @@ public class TicTacToe {
     private boolean xTurn;
     private int emptySpaces;
     private char[][] gameboard;
-    private Scanner scan;
     private int inARowToWin;
 
     public TicTacToe() {
-        this.gameOver = false;
-        this.xTurn = true;
-        this.scan = new Scanner(System.in);
+    }
+
+    public void createInitializedBoard(char[] input) {
+        gameboard = new char[3][3];
+        this.inARowToWin = 3;
+        emptySpaces = 0;
+        for (int i = 0; i < input.length; i++) {
+            char ch = input[i];
+            if (ch == '_' || ch == ' ') {
+                ch = ' ';
+                emptySpaces++;
+            }
+            gameboard[i / 3][i % 3] = ch;
+        }
+        xTurn = (gameboard.length * gameboard.length - emptySpaces) % 2 == 0 ? true : false;
+        printGameboard();
     }
 
     /*
@@ -37,6 +47,9 @@ public class TicTacToe {
      * Create a custom size board with a custom defined amount to connect to win
      */
     public void createBoard(int customSize, int inARowToWin) {
+        this.gameOver = false;
+        this.xTurn = true;
+
         if (customSize > 0 && inARowToWin > 0) {
             this.inARowToWin = inARowToWin;
 
@@ -45,6 +58,8 @@ public class TicTacToe {
             for (char[] chars : gameboard) {
                 Arrays.fill(chars, '_');
             }
+
+            printGameboard();
         } else {
             createBoard(3, 3);
         }
@@ -53,54 +68,46 @@ public class TicTacToe {
     /*
      * Handles the code while the game is in progress
      */
-    public void play() {
-        while (!gameOver) {
-            printGameboard();
-            System.out.println("Enter the coordinates: ");
+    public boolean move(int inputX, int inputY) {
+        if (!gameOver) {
+            //printGameboard();
             int coordX;
             int coordY;
 
-            try {
-                int inputX = scan.nextInt();
-                int inputY = scan.nextInt();
+            /* Verify that the input is within the game's boundaries */
+            if (inputX > 0 && inputX <= gameboard.length && inputY > 0 && inputY <= gameboard.length) {
 
+                coordX = inputX - 1;
+                coordY = Math.abs(inputY - gameboard.length);
 
-                /* Verify that the input is within the game's boundaries */
-                if (inputX > 0 && inputX <= gameboard.length && inputY > 0 && inputY <= gameboard.length) {
+                /* Commit change to board if spot is empty */
+                if (gameboard[coordY][coordX] == '_' || gameboard[coordY][coordX] == ' ') {
+                    gameboard[coordY][coordX] = xTurn ? 'X' : 'O';
 
-                    coordX = inputX - 1;
-                    coordY = Math.abs(inputY - gameboard.length);
+                    emptySpaces--;
+                    printGameboard();
 
-                    /* Commit change to board if spot is empty */
-                    if (gameboard[coordY][coordX] == '_' || gameboard[coordY][coordX] == ' ') {
-                        gameboard[coordY][coordX] = xTurn ? 'X' : 'O';
-
-                        emptySpaces--;
-
-                        /* Check for a win based on the previously played spot */
-                        if (isWinCondition(coordY, coordX)) {
-                            printGameboard();
-                            System.out.println(xTurn ? "X wins" : "O wins");
-                            gameOver = true;
-                        } else if (emptySpaces == 0) {
-                            printGameboard();
-                            System.out.println("Draw");
-                            gameOver = true;
-                        }
-
-                        xTurn = !xTurn;
-
-                    } else {
-                        System.out.println("This cell is occupied! Choose another one!");
+                    /* Check for a win based on the previously played spot */
+                    if (isWinCondition(coordY, coordX)) {
+                        System.out.println(xTurn ? "X wins" : "O wins");
+                        gameOver = true;
+                    } else if (emptySpaces == 0) {
+                        System.out.println("Draw");
+                        gameOver = true;
                     }
+
+                    xTurn = !xTurn;
+
+                    return true;
+
                 } else {
-                    System.out.println("You should enter a number between 1 and 3.");
+                    System.out.println("This cell is occupied! Choose another one!");
                 }
-            } catch (InputMismatchException e) {
-                System.out.println("You should enter a number between 1 and 3.");
-                scan.next();
+            } else {
+                System.out.println(String.format("Coordinates should be from 1 to %s!", gameboard.length));
             }
         }
+        return false;
     }
 
     private boolean isWinCondition(int y, int x) {
@@ -247,4 +254,15 @@ public class TicTacToe {
         System.out.println(header);
     }
 
+    public char[][] getGameboard() {
+        return gameboard;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) { this.gameOver = gameOver; }
+
+    public boolean isXTurn() { return xTurn; }
 }
