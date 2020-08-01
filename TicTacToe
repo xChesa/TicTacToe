@@ -9,6 +9,7 @@ public class TicTacToe {
     private int emptySpaces;
     private char[][] gameboard;
     private int inARowToWin;
+    private String result;
 
     public TicTacToe() {
     }
@@ -20,13 +21,18 @@ public class TicTacToe {
         for (int i = 0; i < input.length; i++) {
             char ch = input[i];
             if (ch == '_' || ch == ' ') {
-                ch = ' ';
                 emptySpaces++;
             }
             gameboard[i / 3][i % 3] = ch;
         }
         xTurn = (gameboard.length * gameboard.length - emptySpaces) % 2 == 0 ? true : false;
-        printGameboard();
+
+        boolean winner = checkAllWinConditions();
+        gameOver = winner;
+        if (!winner && emptySpaces == 0) {
+            gameOver = true;
+            result = "Draw";
+        }
     }
 
     /*
@@ -70,7 +76,6 @@ public class TicTacToe {
      */
     public boolean move(int inputX, int inputY) {
         if (!gameOver) {
-            //printGameboard();
             int coordX;
             int coordY;
 
@@ -78,21 +83,20 @@ public class TicTacToe {
             if (inputX > 0 && inputX <= gameboard.length && inputY > 0 && inputY <= gameboard.length) {
 
                 coordX = inputX - 1;
-                coordY = Math.abs(inputY - gameboard.length);
+                coordY = gameboard.length - inputY;
 
                 /* Commit change to board if spot is empty */
                 if (gameboard[coordY][coordX] == '_' || gameboard[coordY][coordX] == ' ') {
                     gameboard[coordY][coordX] = xTurn ? 'X' : 'O';
 
                     emptySpaces--;
-                    printGameboard();
 
                     /* Check for a win based on the previously played spot */
                     if (isWinCondition(coordY, coordX)) {
-                        System.out.println(xTurn ? "X wins" : "O wins");
+                        result = xTurn ? "X wins" : "O wins";
                         gameOver = true;
                     } else if (emptySpaces == 0) {
-                        System.out.println("Draw");
+                        result = "Draw";
                         gameOver = true;
                     }
 
@@ -110,12 +114,25 @@ public class TicTacToe {
         return false;
     }
 
+    private boolean checkAllWinConditions() {
+        boolean winCondition = false;
+
+        for (int i = 0; i < gameboard.length; i++) {
+            winCondition = winCondition || isWinCondition(i, i);
+            if (winCondition) {
+                result = gameboard[i][i] == 'X' ? "X wins" : "O wins";
+                break;
+            }
+        }
+        return winCondition;
+    }
+
     private boolean isWinCondition(int y, int x) {
         boolean winCondition;
 
         winCondition = checkRow(y, x) || checkCol(y, x);
 
-        if (inARowToWin < gameboard.length || y - x == 0 || gameboard.length - 1 - y - x == 0) {
+        if (gameboard[y][x] != '_' && (inARowToWin < gameboard.length || y - x == 0 || gameboard.length - 1 - y - x == 0)) {
             winCondition = checkDiagonal(y, x) || winCondition;
         }
 
@@ -129,19 +146,21 @@ public class TicTacToe {
 
         int count = 0;
 
-        for (int i = 0; i < gameboard.length; i++) {
-            if (x - i >= 0 && gameboard[y][x] == gameboard[y][x - i]) {
-                count++;
-            } else {
-                break;
+        if (gameboard[y][x] != '_') {
+            for (int i = 0; i < gameboard.length; i++) {
+                if (x - i >= 0 && gameboard[y][x] == gameboard[y][x - i]) {
+                    count++;
+                } else {
+                    break;
+                }
             }
-        }
 
-        for (int i = 0; i < gameboard.length; i++) {
-            if (x + i < gameboard.length && gameboard[y][x] == gameboard[y][x + i]) {
-                count++;
-            } else {
-                break;
+            for (int i = 0; i < gameboard.length; i++) {
+                if (x + i < gameboard.length && gameboard[y][x] == gameboard[y][x + i]) {
+                    count++;
+                } else {
+                    break;
+                }
             }
         }
 
@@ -155,19 +174,21 @@ public class TicTacToe {
     private boolean checkCol(int y, int x) {
         int count = 0;
 
-        for (int i = 0; i < gameboard.length; i++) {
-            if (y - i >= 0 && gameboard[y][x] == gameboard[y - i][x]) {
-                count++;
-            } else {
-                break;
+        if (gameboard[y][x] != '_') {
+            for (int i = 0; i < gameboard.length; i++) {
+                if (y - i >= 0 && gameboard[y][x] == gameboard[y - i][x]) {
+                    count++;
+                } else {
+                    break;
+                }
             }
-        }
 
-        for (int i = 0; i < gameboard.length; i++) {
-            if (y + i < gameboard.length && gameboard[y][x] == gameboard[y + i][x]) {
-                count++;
-            } else {
-                break;
+            for (int i = 0; i < gameboard.length; i++) {
+                if (y + i < gameboard.length && gameboard[y][x] == gameboard[y + i][x]) {
+                    count++;
+                } else {
+                    break;
+                }
             }
         }
 
@@ -182,7 +203,6 @@ public class TicTacToe {
         boolean ascWin = false;
         int count;
 
-        /* check top left to bottom right diagonal win */
         if (inARowToWin < gameboard.length || y - x == 0) {
             count = 1;
 
@@ -235,7 +255,7 @@ public class TicTacToe {
     /*
      * Prints game board
      */
-    private void printGameboard() {
+    public void printGameboard() {
         /* Determines the size of the header and footer dynamically with board size */
         StringBuilder header = new StringBuilder("---");
         header.append("--".repeat(gameboard.length));
@@ -265,4 +285,8 @@ public class TicTacToe {
     public void setGameOver(boolean gameOver) { this.gameOver = gameOver; }
 
     public boolean isXTurn() { return xTurn; }
+
+    public String getResult() {
+        return result;
+    }
 }
