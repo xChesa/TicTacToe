@@ -5,17 +5,25 @@ import java.util.Random;
 
 public abstract class AIPlayer {
 
-    private String difficulty;
-    private char identifier;
+    protected String difficulty;
+    protected char identifier;
 
-    public AIPlayer() {}
+    public AIPlayer(char identifier, String difficulty) {
+        this.identifier = identifier;
+        this.difficulty = difficulty;
+    }
 
     public abstract int getTurn(char[][] gameboard);
 
-    public abstract String getDifficulty();
+    protected int getRandomMove(char[][] gameboard) {
+        ArrayList<Integer> open = getOpenSpaces(gameboard);
 
-    public int getRandomMove(char[][] gameboard) {
-        ArrayList open = new ArrayList<Integer>();
+        Random random = new Random();
+        return open.get(random.nextInt(open.size()));
+    }
+
+    protected ArrayList<Integer> getOpenSpaces(char[][] gameboard) {
+        ArrayList<Integer> open = new ArrayList<>();
         for (int i = 0; i < gameboard.length; i++) {
             for (int j = 0; j < gameboard.length; j++) {
                 if (gameboard[i][j] == '_' || gameboard[i][j] == ' ') {
@@ -23,15 +31,18 @@ public abstract class AIPlayer {
                 }
             }
         }
-        System.out.println(open.toString());
-
-        Random random = new Random();
-        int num = (int) open.get(random.nextInt(open.size()));
-        System.out.println(num);
-        return num;
+        return open;
     }
 
     public int translateToPos(int boardLength, int row, int col) {
+        //row = 0;
+        //col = 2;
+        //System.out.println(boardLength + " " + row + " " + col);
+        //System.out.println((boardLength - (row + 1)) * boardLength + (col + 1));
         return (boardLength - (row + 1)) * boardLength + (col + 1);
+    }
+
+    public String getDifficulty() {
+        return difficulty;
     }
 }
