@@ -35,10 +35,6 @@ public abstract class AIPlayer {
     }
 
     public int translateToPos(int boardLength, int row, int col) {
-        //row = 0;
-        //col = 2;
-        //System.out.println(boardLength + " " + row + " " + col);
-        //System.out.println((boardLength - (row + 1)) * boardLength + (col + 1));
         return (boardLength - (row + 1)) * boardLength + (col + 1);
     }
 
