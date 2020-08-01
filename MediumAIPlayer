@@ -2,13 +2,10 @@ package tictactoe;
 
 public class MediumAIPlayer extends AIPlayer {
 
-    private final String difficulty;
-    private final char identifier;
     private final char enemy;
 
     public MediumAIPlayer(char identifier) {
-        this.difficulty = "medium";
-        this.identifier = identifier;
+        super(identifier, "medium");
         enemy = identifier == 'X' ? 'O' : 'X';
     }
 
@@ -25,42 +22,25 @@ public class MediumAIPlayer extends AIPlayer {
                 int nextCol = j + 1 >= len ? 0 : j + 1;
                 if (current == ' ' || current == '_') {
                     if (gameboard[i][nextCol] == gameboard[i][prevCol]) {
-                        System.out.println(i + " " + j);
-                        System.out.println("checking " + i + " " + nextCol + " and " + i + " " + prevCol);
                         if (gameboard[i][nextCol] == identifier || (gameboard[i][nextCol] == enemy && move == -1)) {
-                            if (gameboard[i][nextCol] == enemy) {
-                                System.out.println("blocking");
-                            }
                             move = translateToPos(len, i, j);
                         }
                     }
 
                     if (gameboard[nextRow][j] == gameboard[prevRow][j]) {
-                        System.out.println(i + " " + j);
-                        System.out.println("checking " + nextRow + " " + j + " and " + prevRow + " " + j);
                         if (gameboard[nextRow][j] == identifier || (gameboard[nextRow][j] == enemy && move == -1)) {
-                            if (gameboard[nextRow][j] == enemy) {
-                                System.out.println("blocking");
-                            }
                             move = translateToPos(len, i, j);
                         }
                     }
 
                     if (j - i == 0 && gameboard[nextRow][nextCol] == gameboard[prevRow][prevCol]) {
-                        System.out.println(i + " " + j);
-                        System.out.println("checking " + nextRow + " " + nextCol + " and " + prevRow + " " + prevCol);
                         if (gameboard[nextRow][nextCol] == identifier ||
                                 (gameboard[nextRow][nextCol] == enemy && move == -1)) {
-                            if (gameboard[nextRow][nextCol] == enemy) {
-                                System.out.println("blocking");
-                            }
                             move = translateToPos(len, i, j);
                         }
                     }
 
                     if (i + j + 1 == len && gameboard[prevRow][nextCol] == gameboard[nextRow][prevCol]) {
-                        System.out.println(i + " " + j);
-                        System.out.println("checking " + prevRow + " " + nextCol + " and " + nextRow + " " + prevCol);
                         if (gameboard[prevRow][nextCol] == identifier ||
                                 (gameboard[prevRow][nextCol] == enemy && move == -1)) {
                             move = translateToPos(len, i, j);
@@ -69,17 +49,10 @@ public class MediumAIPlayer extends AIPlayer {
                 }
             }
         }
-        System.out.println(move);
         if (move == -1) {
             return getRandomMove(gameboard);
         } else {
-            System.out.println(move);
             return move;
         }
-    }
-
-    @Override
-    public String getDifficulty() {
-        return difficulty;
     }
 }
